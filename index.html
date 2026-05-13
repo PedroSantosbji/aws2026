@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS & Guidance — Data Foundation from Zero to Datalake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --yellow: rgb(251, 205, 45);
+    --black: rgb(0, 0, 0);
+    --ink: rgb(21, 21, 21);
+    --ink-2: rgb(26, 26, 26);
+    --ink-3: rgb(61, 61, 61);
+    --paper: rgb(255, 255, 255);
+    --paper-2: rgb(250, 250, 250);
+    --field: rgb(245, 245, 245);
+    --hair: rgba(0, 0, 0, 0.08);
+    --max: 1400px;
+    --gutter: 120px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--black);
+    font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+  @media (max-width: 1100px) {
+    :root { --gutter: 48px; }
+  }
+  @media (max-width: 720px) {
+    :root { --gutter: 24px; }
+  }
+
+  /* ────────── Header ────────── */
+  header.site {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    background: var(--paper);
+  }
+  .brand-guidance {
+    display: inline-flex;
+    align-items: center;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand-guidance img { height: 49px; width: auto; display: block; }
+  .brand-guidance--sm img { height: 42px; }
+  .brand-aws {
+    height: 56px;
+    width: auto;
+    display: block;
+  }
+  @media (max-width: 720px) {
+    header.site { height: 96px; gap: 36px; }
+    .brand-guidance img { height: 36px; }
+    .brand-guidance--sm img { height: 32px; }
+    .brand-aws { height: 40px; }
+  }
+
+  /* ────────── Hero ────────── */
+  .hero {
+    background: var(--yellow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .dots {
+    position: absolute;
+    inset: 57px 62px 47px 62px;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.92) 1.6px, transparent 1.8px);
+    background-size: 56px 56px;
+    background-position: 0 0;
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 44px;
+    align-items: center;
+    padding-top: 115px;
+    padding-bottom: 130px;
+  }
+  .hero h1 {
+    font-family: "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 4.4vw, 62px);
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    margin: 0;
+    color: var(--black);
+  }
+  .hero h1 .sep { display: block; height: 0.45em; }
+  .hero-aws {
+    justify-self: end;
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 716 / 428;
+    background: url('assets/aws-logo.png') center / contain no-repeat;
+  }
+  @media (max-width: 900px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      padding-top: 64px;
+      padding-bottom: 72px;
+      gap: 40px;
+    }
+    .hero-aws { max-width: 360px; justify-self: start; }
+  }
+
+  /* ────────── Section ────────── */
+  section.block {
+    padding: 142px 0 0;
+  }
+  section.block:first-of-type { padding-top: 142px; }
+  @media (max-width: 900px) {
+    section.block { padding-top: 88px; }
+  }
+
+  h2.section {
+    font-family: "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 70px);
+    line-height: 1.04;
+    letter-spacing: -0.012em;
+    margin: 0;
+    color: var(--black);
+  }
+  p.lead {
+    font-family: "Manrope", sans-serif;
+    font-weight: 400;
+    font-size: clamp(18px, 1.6vw, 26px);
+    line-height: 1.38;
+    letter-spacing: -0.012em;
+    color: var(--black);
+    margin: 0;
+  }
+
+  /* ────────── Contact ────────── */
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 102px;
+    align-items: start;
+  }
+  .contact .copy h2 { margin-bottom: 100px; max-width: 560px; }
+  .contact .copy p + p { margin-top: 1.1em; }
+
+  form.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 584px;
+    justify-self: end;
+    width: 100%;
+  }
+  .field {
+    position: relative;
+    background: var(--field);
+    border-radius: 2px;
+    transition: background 160ms ease, box-shadow 160ms ease;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: "Inter", sans-serif;
+    font-size: 14.4px;
+    color: var(--black);
+    padding: 16px 16px 16px 11px;
+    line-height: 1.18;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 102px;
+    padding-top: 15px;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+  }
+  .field:focus-within {
+    background: rgb(238, 238, 238);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18);
+  }
+  .field.error {
+    box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.55);
+    background: rgba(254, 226, 226, 0.65);
+  }
+  .field-error {
+    display: none;
+    color: rgb(180, 28, 28);
+    font-family: "Inter", sans-serif;
+    font-size: 11.5px;
+    margin: 4px 0 -4px 11px;
+  }
+  .field.error + .field-error { display: block; }
+
+  .consent {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 4px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .consent input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 2.5px;
+    border: 1px solid rgb(118, 118, 118);
+    background: var(--paper);
+    margin: 4px 0 0 0;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 140ms ease, border-color 140ms ease;
+  }
+  .consent input:checked {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .consent input:checked::after {
+    content: "";
+    width: 7px;
+    height: 4px;
+    border-left: 1.5px solid white;
+    border-bottom: 1.5px solid white;
+    transform: translateY(-1px) rotate(-45deg);
+  }
+  .consent .text {
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-3);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.85;
+  }
+
+  .btn-submit {
+    appearance: none;
+    border: 0;
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 20px 32px;
+    border-radius: 2px;
+    box-shadow: -1px -1px 1px 0 rgba(0,0,0,0.09);
+    margin-top: 12px;
+    transition: background 160ms ease, transform 80ms ease;
+  }
+  .btn-submit:hover { background: rgb(8, 8, 8); }
+  .btn-submit:active { transform: translateY(1px); }
+  .btn-submit:disabled {
+    background: rgb(180, 180, 180);
+    cursor: not-allowed;
+  }
+  .btn-submit.sending { background: rgb(60, 60, 60); }
+
+  /* Honeypot anti-bot — invisível para humanos */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .consent-error {
+    display: none;
+    color: rgb(180, 28, 28);
+    font-family: "Inter", sans-serif;
+    font-size: 11.5px;
+    margin: -6px 0 0 23px;
+  }
+  .consent.error input { border-color: rgb(180, 28, 28); box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18); }
+  .consent.error + .consent-error { display: block; }
+
+  .form-success {
+    border-radius: 4px;
+    background: rgba(251, 205, 45, 0.18);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 28px 28px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .form-success.show { display: flex; animation: fadeUp 360ms ease both; }
+  .form-success .ico {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--yellow);
+    display: grid; place-items: center;
+  }
+  .form-success h3 {
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    margin: 4px 0 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .form-success p {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-3);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 980px) {
+    .contact {
+      grid-template-columns: 1fr;
+      gap: 56px;
+    }
+    .contact .copy h2 { margin-bottom: 36px; }
+    form.contact-form { justify-self: start; max-width: none; }
+  }
+
+  /* ────────── Offer ────────── */
+  .offer { display: flex; flex-direction: column; gap: 56px; }
+  .offer h2 { max-width: 720px; }
+  .offer p { max-width: 1100px; }
+  .offer .small {
+    font-family: "Manrope", sans-serif;
+    font-weight: 700;
+    font-size: clamp(15px, 1.2vw, 18px);
+    letter-spacing: -0.01em;
+    color: var(--black);
+  }
+
+  /* ────────── About ────────── */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 62px;
+    align-items: center;
+  }
+  .about .photo {
+    width: 100%;
+    aspect-ratio: 713 / 745;
+    background: url('assets/guidance-photo.jpg') center / cover no-repeat;
+    background-color: rgb(220,220,220);
+  }
+  .about .copy h2 { margin-bottom: 44px; max-width: 460px; }
+  @media (max-width: 980px) {
+    .about { grid-template-columns: 1fr; }
+    .about .photo { aspect-ratio: 4 / 3; }
+  }
+
+  /* ────────── Footer ────────── */
+  footer.site {
+    margin-top: 142px;
+    padding: 0 0 0;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 80px;
+    align-items: start;
+    padding-bottom: 56px;
+  }
+  .footer-grid h4 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.027em;
+    color: var(--ink);
+    margin: 0 0 7px;
+  }
+  .footer-grid p, .footer-grid a {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.36;
+    color: var(--ink);
+    margin: 0;
+    text-decoration: none;
+    white-space: pre-line;
+  }
+  .footer-grid a:hover { text-decoration: underline; }
+  .socials { display: flex; gap: 14px; padding-top: 4px; }
+  .socials a {
+    width: 25px; height: 25px;
+    color: var(--ink);
+    display: grid; place-items: center;
+    transition: transform 160ms ease, opacity 160ms ease;
+  }
+  .socials a:hover { transform: translateY(-1px); opacity: 0.7; }
+  .socials svg { width: 22px; height: 22px; display: block; }
+
+  .footer-bar {
+    background: var(--paper-2);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 18px 0;
+  }
+  .footer-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .footer-bar a { text-decoration: none; color: inherit; }
+  .footer-bar a:hover { text-decoration: underline; }
+
+  @media (max-width: 980px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+    .socials { grid-column: span 2; }
+    .footer-bar-inner { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────── Header ───────── -->
+<header class="site" data-screen-label="01 Header">
+  <a href="#" class="brand-guidance" aria-label="Guidance">
+    <img src="assets/guidance-logo.svg" alt="Guidance" />
+  </a>
+  <img class="brand-aws" src="assets/aws-logo.png" alt="AWS" />
+</header>
+
+<!-- ───────── Hero ───────── -->
+<section class="hero" data-screen-label="02 Hero">
+  <div class="dots" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <h1 style="font-weight: 700">AWS &amp; Guidance 
+
+
+Data Foundation from Zero to Datalake</h1>
+    <div class="hero-aws" aria-hidden="true" style="width: 200px"></div>
+  </div>
+</section>
+
+<!-- ───────── Vamos conversar ───────── -->
+<section class="block" data-screen-label="03 Contact" id="contato">
+  <div class="wrap contact">
+    <div class="copy">
+      <h2 class="section">Vamos<br/>conversar?</h2>
+      <p class="lead">No workshop, mostramos na prática como conectamos as 8 etapas da fundação de dados à decisão operacional. Agora, o desafio é entender como essa jornada sai da teoria e ganha escala dentro da sua operação.</p>
+      <p class="lead">A Guidance faz exatamente esse caminho com você. São mais de R$ 500 milhões em resultados entregues para mais de 70 clientes, com 95% de renovação de contratos. Não porque a gente entrega projetos bonitos, mas porque o dado vira decisão, e a decisão vira número.</p>
+    </div>
+
+    <form class="contact-form" id="leadForm" novalidate>
+      <div>
+        <div class="field"><input id="nome" name="nome" type="text" placeholder="Nome Completo *" autocomplete="name" required /></div>
+        <div class="field-error">Informe seu nome completo.</div>
+      </div>
+      <div>
+        <div class="field"><input id="email" name="email" type="email" placeholder="E-mail *" autocomplete="email" required /></div>
+        <div class="field-error">E-mail inválido.</div>
+      </div>
+      <div>
+        <div class="field"><input id="telefone" name="telefone" type="tel" placeholder="Telefone *" autocomplete="tel" required /></div>
+        <div class="field-error">Telefone inválido.</div>
+      </div>
+      <div>
+        <div class="field"><input id="cargo" name="cargo" type="text" placeholder="Cargo *" required /></div>
+        <div class="field-error">Informe seu cargo.</div>
+      </div>
+      <div>
+        <div class="field"><input id="empresa" name="empresa" type="text" placeholder="Empresa *" autocomplete="organization" required /></div>
+        <div class="field-error">Informe a empresa.</div>
+      </div>
+      <div>
+        <div class="field"><textarea id="desafio" name="desafio" placeholder="Conta para a gente qual o seu maior desafio com IA e Dados?"></textarea></div>
+      </div>
+
+      <label class="consent" for="consent">
+        <input type="checkbox" id="consent" required />
+        <span class="text">Você concorda em receber ofertas, notícias ou promoções por e-mail, mensagens de texto ou telefone, de acordo com a nossa Política de Privacidade e Política de Segurança da Informação <span aria-hidden="true">*</span></span>
+      </label>
+      <div class="consent-error" id="consentError">É necessário aceitar a política para enviar.</div>
+
+      <!-- Honeypot anti-bot. Humanos não veem; bots preenchem. -->
+      <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" id="website" tabindex="-1" autocomplete="off" /></label></div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Enviar</button>
+
+      <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+        <div class="ico" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3>Mensagem enviada</h3>
+        <p>Obrigado pelo contato. Nosso time vai retornar em até 1 dia útil para combinar os próximos passos.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ───────── Oferta ───────── -->
+<section class="block" data-screen-label="04 Offer">
+  <div class="wrap offer">
+    <h2 class="section">Oferta exclusiva Guidance e AWS</h2>
+    <p class="lead">Participantes elegíveis do workshop podem acessar até <strong>$10.000 USD em créditos AWS</strong> para iniciar a implementação.</p>
+    <p class="small">*Sujeito à elegibilidade e aprovação pela AWS.</p>
+  </div>
+</section>
+
+<!-- ───────── About ───────── -->
+<section class="block" data-screen-label="05 About">
+  <div class="wrap about">
+    <div class="photo" role="img" aria-label="Equipe Guidance"></div>
+    <div class="copy">
+      <h2 class="section">Sobre a Guidance</h2>
+      <p class="lead">A Guidance atuando onde decisões impactam margem, receita e eficiência operacional. Não entregamos apenas análises ou dashboards. Identificamos variáveis invisíveis do negócio, padrões ocultos e sinais que a operação ainda não consegue interpretar, transformando isso em modelos que apoiam decisões no momento em que elas precisam ser tomadas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Footer ───────── -->
+<footer class="site" data-screen-label="06 Footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#" class="brand-guidance brand-guidance--sm" aria-label="Guidance">
+        <img src="assets/guidance-logo.svg" alt="Guidance" />
+      </a>
+      <div>
+        <h4>Endereço</h4>
+        <p>Av. do Contorno, 10147
+2º Andar  Prado,
+Belo Horizonte — MG</p>
+      </div>
+      <div>
+        <h4>Telefone</h4>
+        <p>+55 (31) 9866-5071</p>
+        <h4 style="margin-top: 18px;">E-mail</h4>
+        <a href="mailto:contato@guidance.dev" style="text-decoration: underline;">contato@guidance.dev</a>
+      </div>
+      <div class="socials">
+        <a href="#" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43A2.06 2.06 0 1 1 5.34 3.3a2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
+            <path d="M16 11.4A4 4 0 1 1 12.6 8 4 4 0 0 1 16 11.4z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <div class="wrap footer-bar-inner">
+      <span>© 2026 · Desenvolvimento por Guidance</span>
+      <a href="#">Politicas de privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─────────── Phone mask (Brazilian format) ───────────
+  const tel = document.getElementById('telefone');
+  tel.addEventListener('input', () => {
+    let v = tel.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10) {
+      tel.value = v.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3').replace(/-$/, '');
+    } else if (v.length > 6) {
+      tel.value = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3').replace(/-$/, '');
+    } else if (v.length > 2) {
+      tel.value = v.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2').trim();
+    } else if (v.length > 0) {
+      tel.value = '(' + v;
+    } else {
+      tel.value = '';
+    }
+  });
+
+  // ─────────── Live error clearing ───────────
+  document.querySelectorAll('.field input, .field textarea').forEach(el => {
+    el.addEventListener('input', () => {
+      el.closest('.field').classList.remove('error');
+    });
+    el.addEventListener('blur', () => {
+      if (el.required && !el.value.trim()) el.closest('.field').classList.add('error');
+    });
+  });
+  document.getElementById('consent').addEventListener('change', e => {
+    if (e.target.checked) e.target.closest('.consent').classList.remove('error');
+  });
+
+  // ─────────── Validation + submit ───────────
+  const form = document.getElementById('leadForm');
+  const btn = document.getElementById('submitBtn');
+  const success = document.getElementById('formSuccess');
+  // Endpoint: /api/lead (proxy serverless do Vercel — mesma origem).
+  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const isPhone = v => v.replace(/\D/g, '').length >= 10;
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    let ok = true;
+    const validators = {
+      nome: v => v.trim().length >= 2,
+      email: v => isEmail(v.trim()),
+      telefone: v => isPhone(v.trim()),
+      cargo: v => v.trim().length >= 2,
+      empresa: v => v.trim().length >= 2,
+    };
+    Object.entries(validators).forEach(([id, fn]) => {
+      const el = document.getElementById(id);
+      const wrap = el.closest('.field');
+      if (!fn(el.value)) { wrap.classList.add('error'); ok = false; }
+      else { wrap.classList.remove('error'); }
+    });
+
+    // Consent obrigatório
+    const consentEl = document.getElementById('consent');
+    const consentLabel = consentEl.closest('.consent');
+    if (!consentEl.checked) {
+      consentLabel.classList.add('error');
+      ok = false;
+    } else {
+      consentLabel.classList.remove('error');
+    }
+
+    if (!ok) {
+      const firstError = document.querySelector('.field.error input, .field.error textarea');
+      if (firstError) firstError.focus();
+      else if (!consentEl.checked) consentEl.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('sending');
+    btn.textContent = 'Enviando...';
+
+    const payload = {
+      timestamp: new Date().toISOString(),
+      nome: document.getElementById('nome').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      telefone: document.getElementById('telefone').value.trim(),
+      cargo: document.getElementById('cargo').value.trim(),
+      empresa: document.getElementById('empresa').value.trim(),
+      desafio: document.getElementById('desafio').value.trim(),
+      consent: document.getElementById('consent').checked,
+      website: document.getElementById('website') ? document.getElementById('website').value : '',
+      origem: 'LP AWS Guidance — Data Foundation',
+      pagina: location.href,
+    };
+
+    const showSuccess = () => {
+      btn.style.display = 'none';
+      success.classList.add('show');
+      form.querySelectorAll('input, textarea').forEach(el => {
+        if (el.type !== 'checkbox') el.value = '';
+        else el.checked = false;
+      });
+    };
+
+    const showError = (msg) => {
+      btn.disabled = false;
+      btn.classList.remove('sending');
+      btn.textContent = 'Tentar novamente';
+      let banner = document.getElementById('formError');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'formError';
+        banner.style.cssText = 'margin-top:10px;padding:14px 16px;border-radius:4px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);color:rgb(155,28,28);font-family:Inter,sans-serif;font-size:13px;line-height:1.5;';
+        btn.insertAdjacentElement('afterend', banner);
+      }
+      banner.textContent = msg;
+    };
+
+    // Envio via fetch para o proxy serverless em /api/lead.
+    // Mesma origem ⇒ sem CORS. O proxy valida, faz rate-limit, e
+    // encaminha para o Apps Script com um secret que o navegador nunca vê.
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      let data = {};
+      try { data = await res.json(); } catch (_) {}
+      if (!res.ok || !data.ok) {
+        throw new Error(data && data.error ? data.error : ('HTTP ' + res.status));
+      }
+      showSuccess();
+    } catch (err) {
+      console.error('[LP] envio falhou', err);
+      const msg = (err && /validation/i.test(String(err.message)))
+        ? 'Verifique os campos destacados e tente novamente.'
+        : 'Não conseguimos enviar agora. Tente novamente em alguns instantes ou escreva para contato@guidance.dev.';
+      showError(msg);
+    }
+  });
+</script>
+
+</body>
+</html>
